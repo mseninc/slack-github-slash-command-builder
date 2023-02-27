@@ -1,7 +1,12 @@
 {
   "name": "slack-github-slash-command-builder",
   "version": "0.1.0",
-  "private": true,
+  "description": "A simple command builder for GitHub + Slack Integration",
+  "license": "MIT",
+  "homepage": "https://github.com/mseninc/slack-github-slash-command-builder",
+  "bugs": "https://github.com/mseninc/slack-github-slash-command-builder/issues",
+  "repository": "github:mseninc/slack-github-slash-command-builder",
+  "author": "kenzauros <kenzauros@users.noreply.github.com> (https://github.com/kenzauros)",
   "scripts": {
     "dev": "next dev",
     "build": "next build && next export",
