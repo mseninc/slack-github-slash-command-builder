@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.json",
+  // "testEnvironment": "node",
+  "compilerOptions": {
+    "jsx": "react-jsx"
+  }
+}
