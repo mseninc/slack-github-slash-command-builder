@@ -22,6 +22,11 @@ export type FeatureKey = (typeof FeatureKey)[keyof typeof FeatureKey];
 
 export const FeatureKeys = Object.values<FeatureKey>(FeatureKey);
 
+export interface ArgumentOption {
+  readonly key: string;
+  readonly displayLabel: string;
+}
+
 export interface FeatureDefinition {
   readonly order: number;
   readonly key: FeatureKey;
@@ -29,9 +34,7 @@ export interface FeatureDefinition {
   readonly command: string;
   readonly description: string;
   readonly isDefault: boolean;
-  readonly argmentOptions:
-    | null
-    | readonly (ARGUMENT_OPTION_NO_ARGUMENT | ARGUMENT_OPTION_USER_INPUT | string)[];
+  readonly argumentOptions: null | readonly ArgumentOption[];
 }
 
 export const FeatureDefinitions: { [key in FeatureKey]: FeatureDefinition } = {
@@ -42,7 +45,7 @@ export const FeatureDefinitions: { [key in FeatureKey]: FeatureDefinition } = {
     command: "issues",
     description: "Opened or closed issues",
     isDefault: true,
-    argmentOptions: null,
+    argumentOptions: null,
   },
   pulls: {
     order: 2,
@@ -52,7 +55,7 @@ export const FeatureDefinitions: { [key in FeatureKey]: FeatureDefinition } = {
     description:
       'New or merged pull requests, as well as draft pull requests marked "Ready for Review"',
     isDefault: true,
-    argmentOptions: null,
+    argumentOptions: null,
   },
   commits: {
     order: 3,
@@ -61,7 +64,11 @@ export const FeatureDefinitions: { [key in FeatureKey]: FeatureDefinition } = {
     command: "commits",
     description: "New commits on the default branch (usually main)",
     isDefault: true,
-    argmentOptions: [ARGUMENT_OPTION_NO_ARGUMENT, "*", ARGUMENT_OPTION_USER_INPUT],
+    argumentOptions: [
+      { key: ARGUMENT_OPTION_NO_ARGUMENT, displayLabel: "none" },
+      { key: "*", displayLabel: "all" },
+      { key: ARGUMENT_OPTION_USER_INPUT, displayLabel: "" },
+    ],
   },
   releases: {
     order: 4,
@@ -70,7 +77,7 @@ export const FeatureDefinitions: { [key in FeatureKey]: FeatureDefinition } = {
     command: "releases",
     description: "Published releases",
     isDefault: true,
-    argmentOptions: null,
+    argumentOptions: null,
   },
   deployments: {
     order: 5,
@@ -79,7 +86,7 @@ export const FeatureDefinitions: { [key in FeatureKey]: FeatureDefinition } = {
     command: "deployments",
     description: "Deployment status updates.",
     isDefault: true,
-    argmentOptions: null,
+    argumentOptions: null,
   },
   workflows: {
     order: 6,
@@ -88,7 +95,7 @@ export const FeatureDefinitions: { [key in FeatureKey]: FeatureDefinition } = {
     command: "workflows",
     description: "Actions workflow run notifications",
     isDefault: false,
-    argmentOptions: null,
+    argumentOptions: null,
   },
   reviews: {
     order: 7,
@@ -97,7 +104,10 @@ export const FeatureDefinitions: { [key in FeatureKey]: FeatureDefinition } = {
     command: "reviews",
     description: "Pull request reviews",
     isDefault: false,
-    argmentOptions: [ARGUMENT_OPTION_NO_ARGUMENT, "channel"],
+    argumentOptions: [
+      { key: ARGUMENT_OPTION_NO_ARGUMENT, displayLabel: "none" },
+      { key: "channel", displayLabel: "channel" },
+    ],
   },
   comments: {
     order: 8,
@@ -106,7 +116,10 @@ export const FeatureDefinitions: { [key in FeatureKey]: FeatureDefinition } = {
     command: "comments",
     description: "New comments on issues and pull requests",
     isDefault: false,
-    argmentOptions: [ARGUMENT_OPTION_NO_ARGUMENT, "channel"],
+    argumentOptions: [
+      { key: ARGUMENT_OPTION_NO_ARGUMENT, displayLabel: "none" },
+      { key: "channel", displayLabel: "channel" },
+    ],
   },
   branches: {
     order: 9,
@@ -115,7 +128,7 @@ export const FeatureDefinitions: { [key in FeatureKey]: FeatureDefinition } = {
     command: "branches",
     description: "Created or deleted branches",
     isDefault: false,
-    argmentOptions: null,
+    argumentOptions: null,
   },
   label: {
     order: 10,
@@ -124,7 +137,7 @@ export const FeatureDefinitions: { [key in FeatureKey]: FeatureDefinition } = {
     command: "+label",
     description: "Filter issues, pull-requests and comments based on their labels.",
     isDefault: false,
-    argmentOptions: [ARGUMENT_OPTION_USER_INPUT],
+    argumentOptions: [{ key: ARGUMENT_OPTION_USER_INPUT, displayLabel: "" }],
   },
   discussions: {
     order: 11,
@@ -133,7 +146,7 @@ export const FeatureDefinitions: { [key in FeatureKey]: FeatureDefinition } = {
     command: "discussions",
     description: "Discussions created or answered",
     isDefault: false,
-    argmentOptions: null,
+    argumentOptions: null,
   },
 } as const;
 

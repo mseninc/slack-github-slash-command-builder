@@ -1,34 +1,22 @@
 import { FeatureConfig, FeatureKey, FeatureKeys } from "@/resources/FeatureDefinitions";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import packageInfo from "../package.json";
-
-const STORAGE_KEY = `${packageInfo.name}:FeatureConfigs`;
 
 export function useFeatureConfigs() {
   const router = useRouter();
   const query = router.query;
   const [current, setCurrent] = useState<FeatureConfig[] | undefined>(undefined);
+
   useEffect(() => {
     const initValue = decodeFromQuery(query);
-    if (!initValue.length) {
+    if (initValue.length) {
       setCurrent(initValue);
       return;
     }
-    const encoded = localStorage.getItem(STORAGE_KEY);
-    if (encoded) {
-      try {
-        const data = JSON.parse(encoded);
-        setCurrent(data as FeatureConfig[]);
-      } catch (e) {
-        console.warn(`invalid data (${STORAGE_KEY})`, e);
-        setCurrent([]);
-      }
-    }
   }, [query, setCurrent]);
+
   const update = (value: FeatureConfig[]) => {
     setCurrent(value);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
     const encoded = encodeToQuery(value);
     const orgQuery = { ...router.query };
     for (const key of FeatureKeys) {

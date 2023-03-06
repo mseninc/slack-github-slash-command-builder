@@ -1,5 +1,5 @@
 import { Box, Checkbox, HStack, Input, Radio, RadioGroup } from "@chakra-ui/react";
-import { ChangeEvent, useCallback, useRef } from "react";
+import { ChangeEvent, useCallback } from "react";
 import {
   ARGUMENT_OPTION_NO_ARGUMENT,
   ARGUMENT_OPTION_USER_INPUT,
@@ -18,12 +18,8 @@ export function FeatureSelectorItem({
   value,
   onChange,
 }: FeatureSelectorItemProps): JSX.Element {
-  const radioRef = useRef<HTMLInputElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-
   const handleCheckBoxChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      // setSelected(e.currentTarget.checked);
       const newValue: FeatureConfig = {
         ...(value ?? { key: feature.key, selected: false }),
         selected: e.currentTarget.checked,
@@ -39,9 +35,6 @@ export function FeatureSelectorItem({
         ...(value ?? { key: feature.key, selected: false }),
       };
       switch (nextValue) {
-        case ARGUMENT_OPTION_USER_INPUT:
-          newValue.argument = inputRef.current?.value;
-          break;
         case ARGUMENT_OPTION_NO_ARGUMENT:
           newValue.argument = null;
           break;
@@ -58,12 +51,21 @@ export function FeatureSelectorItem({
     (e: ChangeEvent<HTMLInputElement>) => {
       const newValue: FeatureConfig = {
         ...(value ?? { key: feature.key, selected: false }),
-        argument: radioRef.current?.checked ? e.currentTarget.value : "",
+        argument: e.currentTarget.value ?? null,
       };
       onChange?.(newValue);
     },
     [feature, value, onChange],
   );
+
+  const isPredefinedValue = feature.argumentOptions?.some((x) => x.key === `${value?.argument}`);
+  const needsUserInput = feature.argumentOptions?.some((x) => x.key === ARGUMENT_OPTION_USER_INPUT);
+  const radioValue = !value?.argument
+    ? ARGUMENT_OPTION_NO_ARGUMENT
+    : isPredefinedValue
+    ? `${value?.argument}`
+    : "";
+  const inputVal = isPredefinedValue ? "" : value?.argument ?? "";
 
   return (
     <HStack>
@@ -71,38 +73,23 @@ export function FeatureSelectorItem({
         {feature.displayLabel}
       </Checkbox>
       <Box flex={1} />
-      {feature.argmentOptions && (
+      {feature.argumentOptions && (
         <RadioGroup
           onChange={handleArgOptionChange}
           isDisabled={!value?.selected}
-          defaultValue={feature.argmentOptions[0]}
+          value={radioValue}
         >
           <HStack>
-            {feature.argmentOptions?.map((arg, i) => {
-              const label =
-                arg === ARGUMENT_OPTION_USER_INPUT
-                  ? ""
-                  : arg === ARGUMENT_OPTION_NO_ARGUMENT
-                  ? "none"
-                  : arg;
-              const inputVal = feature.argmentOptions?.includes(`${value?.argument}`)
-                ? ""
-                : value?.argument?.toString();
-              return (
-                <HStack key={arg}>
-                  <Radio
-                    ref={arg === ARGUMENT_OPTION_USER_INPUT ? radioRef : undefined}
-                    defaultChecked={i === 0}
-                    value={arg}
-                  >
-                    {label}
-                  </Radio>
-                  {arg === ARGUMENT_OPTION_USER_INPUT && (
-                    <Input ref={inputRef} size="sm" value={inputVal} onChange={handleInputChange} />
-                  )}
-                </HStack>
-              );
-            })}
+            {feature.argumentOptions
+              ?.filter((x) => x.key !== ARGUMENT_OPTION_USER_INPUT)
+              ?.map((argOption) => {
+                return (
+                  <HStack key={argOption.key}>
+                    <Radio value={argOption.key}>{argOption.displayLabel}</Radio>
+                  </HStack>
+                );
+              })}
+            {needsUserInput && <Input size="sm" value={inputVal} onChange={handleInputChange} />}
           </HStack>
         </RadioGroup>
       )}
