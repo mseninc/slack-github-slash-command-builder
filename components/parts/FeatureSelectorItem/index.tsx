@@ -69,14 +69,18 @@ export function FeatureSelectorItem({
 
   return (
     <HStack>
-      <Checkbox isChecked={value?.selected} value={feature.key} onChange={handleCheckBoxChange}>
+      <Checkbox
+        isChecked={value?.selected ?? false}
+        value={feature.key}
+        onChange={handleCheckBoxChange}
+      >
         {feature.displayLabel}
       </Checkbox>
       <Box flex={1} />
       {feature.argumentOptions && (
         <RadioGroup
           onChange={handleArgOptionChange}
-          isDisabled={!value?.selected}
+          isDisabled={!value?.selected ?? false}
           value={radioValue}
         >
           <HStack>
@@ -89,7 +93,14 @@ export function FeatureSelectorItem({
                   </HStack>
                 );
               })}
-            {needsUserInput && <Input size="sm" value={inputVal} onChange={handleInputChange} />}
+            {needsUserInput && (
+              <Input
+                size="sm"
+                value={inputVal}
+                isDisabled={!value?.selected ?? false}
+                onChange={handleInputChange}
+              />
+            )}
           </HStack>
         </RadioGroup>
       )}
