@@ -11,7 +11,6 @@ export function useFeatureConfigs() {
     const initValue = decodeFromQuery(query);
     if (initValue.length) {
       setCurrent(initValue);
-      return;
     }
   }, [query, setCurrent]);
 
