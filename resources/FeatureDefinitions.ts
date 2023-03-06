@@ -118,7 +118,7 @@ export const FeatureDefinitions: { [key in FeatureKey]: FeatureDefinition } = {
     argmentOptions: null,
   },
   label: {
-    order: 910101,
+    order: 10,
     key: "label",
     displayLabel: "filtered by label",
     command: "+label",
@@ -127,7 +127,7 @@ export const FeatureDefinitions: { [key in FeatureKey]: FeatureDefinition } = {
     argmentOptions: [ARGUMENT_OPTION_USER_INPUT],
   },
   discussions: {
-    order: 1011111,
+    order: 11,
     key: "discussions",
     displayLabel: "discussions",
     command: "discussions",

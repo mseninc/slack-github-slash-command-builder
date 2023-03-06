@@ -14,19 +14,20 @@ import { CommandModeSelector } from "@/components/parts/CommandModeSelector";
 import { CommandText } from "@/components/parts/CommandText";
 import { FeatureSelector } from "@/components/parts/FeatureSelector";
 import { getCommandText } from "@/lib/command";
-import { FeatureConfig } from "@/resources/FeatureDefinitions";
 import { CommandMode } from "@/types/CommandMode";
+import { useFeatureConfigs } from "@/lib/feature-configs";
 
 export default function App() {
   const [repoNames, setRepoNames] = useState("org/repo");
   const [mode, setMode] = useState<CommandMode>("subscribe");
-  const [config, setConfig] = useState<FeatureConfig[]>([]);
+
+  const { current: config, update: setConfig } = useFeatureConfigs();
 
   const resultCommands = useMemo(() => {
     const commanLines = repoNames
       .trim()
       .split("\n")
-      .map((repo) => getCommandText({ repo, mode, config }));
+      .map((repo) => getCommandText({ repo, mode, config: config ?? [] }));
     return commanLines.map((c) => {
       return <CommandText key={c} text={c} />;
     });
@@ -54,7 +55,7 @@ export default function App() {
           </Center>
           {/* <hr /> */}
           <Box mt={4}>
-            <FeatureSelector value={config} onChange={setConfig} />
+            <FeatureSelector value={config ?? []} onChange={setConfig} />
           </Box>
           <Heading size="md" mt={4} py={4}>
             {"Repos"}
